@@ -1,4 +1,4 @@
-import React, { createRef } from 'react'
+import React, { createRef , useState} from 'react'
 import {
   Container,
   Dimmer,
@@ -24,6 +24,7 @@ import NodeInfo from './NodeInfo'
 import IdChimpUserModule from './IDChimpUser'
 
 function Main() {
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const { apiState, apiError, keyringState } = useSubstrateState()
 
   const loader = text => (
@@ -57,6 +58,11 @@ function Main() {
 
   const contextRef = createRef()
 
+
+  const toggleAdvanced = () => {
+    setShowAdvanced(!showAdvanced);
+  };
+
   return (
     <div ref={contextRef}>
       <Sticky context={contextRef}>
@@ -79,9 +85,16 @@ function Main() {
            <Balances />
           </Grid.Row>
           <Grid.Row>
+            <button onClick={toggleAdvanced}>
+              {showAdvanced ? 'Hide Advanced Functions' : 'Show Advanced Functions'}
+            </button>
+          </Grid.Row>
+          {showAdvanced && (
+          <Grid.Row>
             <Interactor />
             <Events />
           </Grid.Row>
+        )}
         </Grid>
       </Container>
       <DeveloperConsole />

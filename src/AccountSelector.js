@@ -13,6 +13,8 @@ import {
 
 import { useSubstrate, useSubstrateState } from './substrate-lib'
 
+import ChainSelector from './ChainSelector'
+
 const CHROME_EXT_URL =
   'https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd'
 const FIREFOX_ADDON_URL =
@@ -62,10 +64,15 @@ function Main(props) {
     >
       <Container>
         <Menu.Menu>
-          <Image
-            src={`${process.env.PUBLIC_URL}/assets/substrate-logo.png`}
-            size="mini"
-          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Image
+              src={`${process.env.PUBLIC_URL}/assets/substrate-logo.png`}
+              size="mini"
+            />
+            &nbsp;&nbsp;
+            <ChainSelector />
+          </div>
+          
         </Menu.Menu>
         <Menu.Menu position="right" style={{ alignItems: 'center' }}>
           {!currentAccount ? (
@@ -80,6 +87,7 @@ function Main(props) {
               </a>
               )&nbsp;
             </span>
+            
           ) : null}
           <CopyToClipboard text={acctAddr(currentAccount)}>
             <Button
