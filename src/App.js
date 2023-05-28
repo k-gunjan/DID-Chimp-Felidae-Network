@@ -22,6 +22,8 @@ import Metadata from './Metadata'
 import NodeInfo from './NodeInfo'
 
 import IdChimpUserModule from './IDChimpUser'
+import IdChimpVerifierModule from './IDChimpVerifier'
+import VerificationProtocol from './IDChimpVerificationProtcol'
 
 function Main() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -74,6 +76,10 @@ function Main() {
           <Grid.Row >
             <IdChimpUserModule />
             <EventsOfAccount />
+          </Grid.Row>
+          <Grid.Row >
+            <IdChimpVerifierModule />
+            <VerificationProtocol />
           </Grid.Row>
           <Grid.Row stretched>
             <NodeInfo />
