@@ -32,9 +32,8 @@
     "@polkadot/types": "^7.10.1",
     "@polkadot/ui-keyring": "^1.1.1",
     "@polkadot/ui-settings": "^1.1.1",
-    "@polkadot/util": "^6.11.1",
-    "@polkadot/util-crypto": "^6.11.1",
-    "@polkadot/util-rlp": "^1.8.1",
+    "@polkadot/util": "^8.4.1",
+    "@polkadot/util-crypto": "^8.4.1",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
@@ -43,9 +42,10 @@
     "react-router-dom": "^6.11.2",
     "react-scripts": "^5.0.0",
     "react-select": "^5.7.3",
-    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-css": "Semantic-Org/Semantic-UI-CSS#master",
     "semantic-ui-react": "^2.1.2",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "eslint": "^8.10.0",
