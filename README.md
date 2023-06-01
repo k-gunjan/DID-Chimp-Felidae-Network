@@ -1,13 +1,14 @@
-# Substrate Front End Template
+# Front End Template For Felidae Chain
 
-This template allows you to create a front-end application that connects to a
-[Substrate](https://github.com/paritytech/substrate) node back-end with minimal
+This template allows you to create a front-end application that connects to a substrate based felidae Node [Substrate](https://github.com/paritytech/substrate) back-end with minimal
 configuration. To learn about Substrate itself, visit the
 [Substrate Documentation](https://docs.substrate.io).
 
 The template is built with [Create React App](https://github.com/facebook/create-react-app)
 and [Polkadot js API](https://polkadot.js.org/docs/api/). Familiarity with these tools
 will be helpful, but the template strives to be self-explanatory.
+
+
 
 ## Using The Template
 
@@ -17,8 +18,8 @@ The codebase is installed using [git](https://git-scm.com/) and [yarn](https://y
 
 ```bash
 # Clone the repository
-git clone https://github.com/substrate-developer-hub/substrate-front-end-template.git
-cd substrate-front-end-template
+git clone https://github.com/k-gunjan/DID-Chimp-Felidae-Network.git
+cd DID-Chimp-Felidae-Network
 yarn install
 ```
 

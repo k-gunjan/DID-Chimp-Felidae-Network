@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Feed, Grid, Button, Card } from 'semantic-ui-react'
 
 import { useSubstrateState} from './substrate-lib'
@@ -20,7 +20,7 @@ const TRACKED_EVENTS = [
   "DidCreationResult",
   "VerifierRegistrationRequest",
   "VerifierDeposite", 
-  "Transfer" 
+  // "Transfer" 
 ]
 
 const eventName = ev => `${ev.section}:${ev.method}`
@@ -30,22 +30,24 @@ const eventParams = ev => JSON.stringify(ev.data)
 function Main(props) {
   const { api, currentAccount } = useSubstrateState()
   const [eventFeed, setEventFeed] = useState([])
-
+  const keyNum = useRef(0)
+  
   const [address, setAddress] = useState('')
   useEffect(()=>{
-    if (currentAccount && address !== currentAccount.address) {
+    if (currentAccount && address !== currentAccount.address ) {
       setAddress(currentAccount.address)
       // console.log(`useeffect-address: ${address}`)
     }
-  }, [currentAccount])
-
-
+  }, [currentAccount, address])
+  
+  
+  
   useEffect(() => {
     let unsub = null
-    let keyNum = 0
     const allEvents = async () => {
       
       unsub = await api.query.system.events(events => {
+        if (address.length < 20) return
 
         // loop through the Vec<EventRecord>
         events.forEach(record => {
@@ -58,15 +60,17 @@ function Main(props) {
           const evParams = eventParams(evHuman)
           const evNamePhase = `${evName}::(phase=${phase.toString()})`
           // console.log(`event:${evNamePhase}::->${event.data}, addrs:${address} `)
-
+          
           if (FILTERED_EVENTS.includes(evNamePhase)) return
           // if (event.method !== "DidCreationRequestCreated" ) return
           if (!TRACKED_EVENTS.includes(event.method)) return
-          if (!event.data.includes(address)) return
+          if (!evParams.includes(address.toString())) return
+          console.log(`evParams:${evParams}, address: ${address}`)
+          // console.log(`-----------------event:${evNamePhase}::->${event.data.toHuman()}, addrs:${address} `)
 
           setEventFeed(e => [
             {
-              key: keyNum,
+              key: keyNum.current,
               icon: 'bell',
               summary: evName,
               content: evParams,
@@ -74,14 +78,14 @@ function Main(props) {
             ...e,
           ])
 
-          keyNum += 1
+          keyNum.current += 1
         })
       })
     }
 
     allEvents()
     return () => unsub && unsub()
-  }, [address])
+  }, [address, api.query.system])
 
   const { feedMaxHeight = 250 } = props
 
@@ -89,9 +93,7 @@ function Main(props) {
     <Grid.Column width={8}>
       <Card centered fluid style={{ minHeight: '24em' }} >
         <Card.Content textAlign="center">
-        {/* <div style={{ overflowWrap: 'break-word' }}>Showing events for: {currentAccount && currentAccount.address}</div> */}
-
-        <h1 style={{ float: 'left' }}>Interesting Events</h1>
+        <h1 style={{ float: 'left' }}>Active Account's notifications</h1>
         <Button
           basic
           circular

@@ -1,4 +1,4 @@
-import React, { createRef , useState} from 'react'
+import React, { createRef, useState } from 'react'
 import {
   Container,
   Dimmer,
@@ -6,6 +6,7 @@ import {
   Grid,
   Sticky,
   Message,
+  Button,
 } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 
@@ -16,18 +17,24 @@ import AccountSelector from './AccountSelector'
 import Balances from './Balances'
 import BlockNumber from './BlockNumber'
 import Events from './Events'
-import EventsOfAccount from './EventsOfUser'
 import Interactor from './Interactor'
 import Metadata from './Metadata'
 import NodeInfo from './NodeInfo'
+import TemplateModule from './TemplateModule'
+import Transfer from './Transfer'
+import Upgrade from './Upgrade'
 
 import IdChimpUserModule from './IDChimpUser'
 import IdChimpVerifierModule from './IDChimpVerifier'
 import VerificationProtocol from './IDChimpVerificationProtcol'
+import EventsOfAccount from './EventsOfUser'
 
 function Main() {
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const { apiState, apiError, keyringState } = useSubstrateState()
+
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const toggleShowAdvanced = () => setShowAdvanced(!showAdvanced)
 
   const loader = text => (
     <Dimmer active>
@@ -60,11 +67,6 @@ function Main() {
 
   const contextRef = createRef()
 
-
-  const toggleAdvanced = () => {
-    setShowAdvanced(!showAdvanced);
-  };
-
   return (
     <div ref={contextRef}>
       <Sticky context={contextRef}>
@@ -73,13 +75,27 @@ function Main() {
       <Container>
         <Grid stackable columns="equal">
           <h1>ID-Chimp Module :: Felidae Network </h1>
-          <Grid.Row >
-            <IdChimpUserModule />
-            <EventsOfAccount />
-          </Grid.Row>
-          <Grid.Row >
-            <IdChimpVerifierModule />
+          <Grid.Row>
+            <Grid.Column>
             <VerificationProtocol />
+            </Grid.Column>
+            <Grid.Column>
+              <Grid.Row>
+                <EventsOfAccount />
+              </Grid.Row>
+              <br />
+              <Grid.Row>
+                <IdChimpUserModule />
+              </Grid.Row>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column>
+             <IdChimpVerifierModule />
+            </Grid.Column>
+            <Grid.Column>
+              <Events />
+            </Grid.Column>
           </Grid.Row>
           <Grid.Row stretched>
             <NodeInfo />
@@ -88,19 +104,23 @@ function Main() {
             <BlockNumber finalized />
           </Grid.Row>
           <Grid.Row stretched>
-           <Balances />
+            <Balances />
           </Grid.Row>
-          <Grid.Row>
-            <button onClick={toggleAdvanced}>
-              {showAdvanced ? 'Hide Advanced Functions' : 'Show Advanced Functions'}
-            </button>
-          </Grid.Row>
-          {showAdvanced && (
-          <Grid.Row>
-            <Interactor />
-            <Events />
-          </Grid.Row>
-        )}
+          <Button onClick={toggleShowAdvanced}>
+            {showAdvanced? 'Hide Advanced Options': 'Show Advanced Options'}
+            </Button>
+          { showAdvanced && (
+          <Grid> 
+            <Grid.Row>
+              <Transfer />
+              <Upgrade />
+            </Grid.Row>
+            <Grid.Row>
+              <Interactor />
+              <TemplateModule />
+            </Grid.Row>
+          </Grid>
+          )}
         </Grid>
       </Container>
       <DeveloperConsole />

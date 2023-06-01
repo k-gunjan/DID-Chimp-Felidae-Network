@@ -20,7 +20,6 @@ function Main(props) {
 
   useEffect(() => {
     let unsubscribe
-    api.query &&
     api.query.verifiers && 
     api.query.verifiers
     .verifiers(currentAccount && currentAccount.address, result => {
@@ -40,7 +39,7 @@ function Main(props) {
       .catch(console.error)
 
     return () => unsubscribe && unsubscribe()
-  }, [ currentAccount])
+  }, [ api.query.verifiers, currentAccount])
   return (
     <Grid.Column width={8}>
       <Card centered fluid style={{ minHeight: '24em' }} >
@@ -126,7 +125,7 @@ const Na = () => {
     <Grid.Column width={8}>
       <Card centered fluid style={{ minHeight: '24em' }} >
         <Card.Content textAlign="center">
-      <h2 style={{ color: 'red' }}>Verifiers Module not found on selected the chain</h2>
+      <h2 style={{ color: 'red' }}>Verifiers Module not found on the selected chain</h2>
         </Card.Content>
       </Card>
     </Grid.Column>

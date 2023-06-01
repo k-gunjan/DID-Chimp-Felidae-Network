@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Form, Grid, Header, Input, Button } from 'semantic-ui-react';
-import { keccakAsHex } from '@polkadot/util-crypto';
+import { Card, Form, Grid, Header, Input } from 'semantic-ui-react';
+// import { keccakAsHex } from '@polkadot/util-crypto';
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
@@ -19,29 +19,14 @@ function Main(props) {
   const [verifierStatus, setVerifierStatus] = useState('Not Created')
 
   // Consumer Account Address
-  const [consumerAccount, setConsumerAccount] = useState(0)
+  const [consumerAccount, setConsumerAccount] = useState('')
   // confidence score
   const [cscore, setCscore] = useState(5)
 
-  const [verificationData, setVerificationData] = useState(0);
-  const [accept, setAccept] = useState(false);
-  const [randomNumber, setRandomNumber] = useState('')
-  
-  const toggleAccept = () =>{
-    setAccept(!accept)
-  }
-
-  useEffect(()=>{
-    const combined = 'REJECT'
-    const combinedWithSecret =  combined + randomNumber
-    const hashed = keccakAsHex(combinedWithSecret)
-    setVerificationData({consumerData:combined, hashedConsumerData: hashed,  secret: randomNumber})
-
-  },[randomNumber])
+  const [verificationData, setVerificationData] = useState('');
 
   useEffect(() => {
     let unsubscribe
-    api.query &&
     api.query.verifiers && 
     api.query.verifiers
     .verifiers(currentAccount && currentAccount.address, result => {
@@ -61,7 +46,7 @@ function Main(props) {
       .catch(console.error)
 
     return () => unsubscribe && unsubscribe()
-  }, [ currentAccount])
+  }, [ api.query.verifiers, currentAccount])
   
   return (
     <Grid.Column width={8}>
@@ -117,28 +102,10 @@ function Main(props) {
                   <div style={{ overflowWrap: 'break-word' }}>{statusAck}</div>
             </Form.Field>
           </Form>
-          <br/>
-            <Grid.Row >
-              <Button onClick={toggleAccept}>{accept?'Submit REJECT': 'Submit Data'}</Button>
-            </Grid.Row>
-            <br/>
-           {accept && (< ConsumerDataForm setVerificationData={setVerificationData} />)}
-           {!accept && (
-            <Form>
-              <Form.Field>
-                <span>Reject the Creation of DID</span>
-              </Form.Field>
-              <Form.Field>
-                <Input
-                  label="Random Secret"
-                  state="secret"
-                  type="string"
-                  onChange={(_, { value }) => setRandomNumber(value)}
-                  />
-              </Form.Field>
-            </Form>
-           )}
            <br/>
+           <Grid.Row>
+            < ConsumerDataForm setVerificationData={setVerificationData} />
+           </Grid.Row>
             <Grid.Row >
                     <TxButton
                       label="Submit Verification Data"

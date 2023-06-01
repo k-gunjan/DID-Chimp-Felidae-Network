@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Input, Button } from 'semantic-ui-react';
 
-import { keccakAsHex } from '@polkadot/util-crypto';
+import { keccakAsHex, keccak256AsU8a } from '@polkadot/util-crypto';
 
+function toHexString(byteArray) {
+  return '0x' + Array.from(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
+}
 
-const ConsumerDataForm = ({ setVerificationData }) => {
+const ConsumerDataForm = ({  setVerificationData }) => {
   const [name, setName] = useState('');
   const [fatherName, setFatherName] = useState('');
   const [motherName, setMotherName] = useState('');
@@ -14,10 +19,88 @@ const ConsumerDataForm = ({ setVerificationData }) => {
   const [idIssuer, setIDIssuer] = useState('');
   const [country, setCountry] = useState('');
   const [randomNumber, setRandomNumber] = useState('');
+  // submit REJECT or Approve with user details
+  const [approve, setApprove] = useState(true);
+
+  const toggleApprove = () => setApprove(!approve)
+
 
 
   useEffect(()=>{
-    handleSubmit()
+      let encoder = new TextEncoder()
+      const data = {
+        name,
+        fatherName,
+        motherName,
+        guardianName,
+        dob,
+        idType,
+        idIssuer,
+        country,
+        randomNumber,
+
+        dnf: function() {
+          let rdata = ''
+          if (data.fatherName !== '') {
+             rdata = data.dob + data.name + data.fatherName
+          } 
+          // console.log(rdata)
+          return keccak256AsU8a(rdata)
+        },
+
+        dnm: function() {
+           let rdata = ''
+           if (data.motherName !== '') {
+              return data.dob + data.name + data.motherName
+           } 
+          //  console.log(rdata)
+           return keccak256AsU8a(rdata)
+        },
+
+        dng: function() {
+          let rdata = ''
+          if (data.motherName !== '') {
+              return data.dob + data.name + data.guardianName
+           } 
+          // console.log(rdata)
+          return keccak256AsU8a(rdata)
+        },
+
+        submissionData: function() {
+          const delimiterString = '^'
+          const delimiter = encoder.encode(delimiterString)
+          let combinedBytes
+          if (approve) {
+            const part1 = encoder.encode(
+              [this.idIssuer, this.idType, this.country, ].join(delimiterString) 
+              )
+            // console.log([this.idIssuer, this.idType, this.country, ].join(delimiterString) )
+            // console.log(part1.length)
+            const partLength = part1.length
+            // each keccak hash  is 32 bytes long and each delimiter is 1 byte long
+            const totalLength = partLength + 3 + 3*32 
+            combinedBytes = new Uint8Array(totalLength)
+            combinedBytes.set(part1);
+            combinedBytes.set(delimiter, part1.length)
+            combinedBytes.set(this.dnf(), part1.length + 1)
+            combinedBytes.set(delimiter, part1.length + 1 + 32 )
+            combinedBytes.set(this.dnm(), part1.length + 1 + 32 +1 )
+            combinedBytes.set(delimiter, part1.length + 1 + 32 + 1 + 32  )
+            combinedBytes.set(this.dnm(), part1.length + 1 + 32 + 1 + 32 + 1)
+          } else {
+            combinedBytes = encoder.encode('REJECT')
+          }
+
+          const combinedBytesWithSecret = [ ...combinedBytes, ...encoder.encode(this.randomNumber)]
+          const hashed = keccakAsHex(combinedBytesWithSecret)
+          console.log(`combinedData=${toHexString(combinedBytes)}`)
+          console.log(`hash of combinedDataWithSecret=${hashed}`)
+          return ({consumerData:toHexString(combinedBytes), hashedConsumerData: hashed,  secret: this.randomNumber})
+        },
+      }
+      setVerificationData({...data.submissionData()})
+    // console.log(`keccak as hex: ${keccakAsHex(name)}`)
+
   }, [
       name,
       fatherName,
@@ -28,75 +111,22 @@ const ConsumerDataForm = ({ setVerificationData }) => {
       idIssuer,
       country,
       randomNumber,
+      approve,
+      setVerificationData
     ])
 
-  const handleSubmit = () => {
-
-    const data = {
-      name,
-      fatherName,
-      motherName,
-      guardianName,
-      dob,
-      idType,
-      idIssuer,
-      country,
-      randomNumber,
-
-      dnf: function() {
-        let rdata = ''
-        if (data.fatherName !== '') {
-           rdata = data.dob + data.name + data.fatherName
-        } 
-        // console.log(rdata)
-        return rdata
-      },
-
-      dnm: function() {
-         let rdata = ''
-         if (data.motherName !== '') {
-            return data.dob + data.name + data.motherName
-         } 
-        //  console.log(rdata)
-         return rdata
-      },
-
-      dng: function() {
-        let rdata = ''
-        if (data.motherName !== '') {
-            return data.dob + data.name + data.guardianName
-         } 
-        // console.log(rdata)
-        return rdata
-      },
-
-      submissionData: function() {
-        const delimiter = '^'
-        const combined = [
-            this.idIssuer,
-            this.idType,
-            this.country,
-            keccakAsHex(this.dnf()),
-            keccakAsHex(this.dnm()),
-            keccakAsHex(this.dng())
-        ]
-        const combinedWithSecret =  combined.join(delimiter) + this.randomNumber
-        const hashed = keccakAsHex(combinedWithSecret)
-
-        setVerificationData({consumerData:combined.join(delimiter), hashedConsumerData: hashed,  secret: this.randomNumber})
-    },
-
-     
-    }
-
-    // console.log(`keccak as hex: ${keccakAsHex(name)}`)
-
-
-  };
+  
 
   return (
      <Form >
-        <span>Approve the creation of DID</span><div>Fill up the consumer details based on the  uploaded document</div><br/>
+      <Form.Field>
+         <Button disabled={approve}  onClick={toggleApprove}>Approve with Data</Button>
+         <Button disabled={!approve} onClick={toggleApprove}>Submit REJECT</Button>
+      </Form.Field>
+      {!approve? (<span>Reject the Creation of DID</span>) :
+       ( <div><span>Approve the creation of DID</span><br/>
+      Fill up the consumer details based on the  uploaded document      
+        <br/>
       <Form.Group widths="equal">
         <Form.Field>
           <label>Name</label>
@@ -162,6 +192,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
           />
         </Form.Field>
       </Form.Group>
+   </div>  )}
       <Form.Group widths="equal">
         <Form.Field>
           <label>Random Secret</label>

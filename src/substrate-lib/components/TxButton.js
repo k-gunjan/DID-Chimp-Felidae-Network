@@ -49,10 +49,11 @@ function TxButton({
       address,
       meta: { source, isInjected },
     } = currentAccount
+
     if (!isInjected) {
       return [currentAccount]
     }
-    
+
     // currentAccount is injected from polkadot-JS extension, need to return the addr and signer object.
     // ref: https://polkadot.js.org/docs/extension/cookbook#sign-and-send-a-transaction
     const injector = await web3FromSource(source)
@@ -64,7 +65,7 @@ function TxButton({
       ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
       : setStatus(`Current transaction status: ${status.type}`)
 
-       // Loop through Vec<EventRecord> to display all events
+      // Loop through Vec<EventRecord> to display all events
       events.forEach(({ _, event: { data, method, section } }) => {
         // console.log(`\t---inner--report: ' ${phase}: ${section}.${method}:: ${data}`);
         if ((section + ":" + method) === 'system:ExtrinsicFailed' ) {
@@ -94,11 +95,10 @@ function TxButton({
           }
           setStatus(`😞 Transaction Failed! ${section}.${method}::${errorInfo}`)
         } else if (section + ":" + method === 'system:ExtrinsicSuccess' ) {
-          setStatus(`❤️️ Transaction successful! tx hash: ${txHash} , Block hash: ${status.asFinalized.toString()}`)
+          setStatus(`❤️️ Transaction successful! tx hash: ${txHash}`)
         }
       });
-
-    }
+  }
 
   const txErrHandler = err =>
     setStatus(`😞 Transaction Failed: ${err.toString()}`)

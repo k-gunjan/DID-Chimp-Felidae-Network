@@ -23,7 +23,7 @@ function Main(props) {
     
     useEffect(()=>{
         setSelectedOption(getChainFromChainOptions(socket))
-    }, [])
+    }, [socket])
   
     return (
       <div style={{ maxWidth: '500px', }}>

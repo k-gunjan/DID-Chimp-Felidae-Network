@@ -2,7 +2,7 @@
   "APP_NAME": "id-chimp-front-end",
   "CUSTOM_RPC_METHODS": {},
   "chainOptions" : [
-    { "label": "Local Node", "value": "ws://127.0.0.1:9944" },
-    { "label": "Felidae Test Network", "value": "wss://panther-testnet.live" }
+    { "label": "Felidae Test Network", "value": "wss://panther-testnet.live" },
+    { "label": "Local Node", "value": "ws://127.0.0.1:9944" }
   ]
 }
