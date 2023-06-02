@@ -8333,9 +8333,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"id-chimp-front-end@workspace:.":
+"idb@npm:^7.0.1":
+  version: 7.1.1
+  resolution: "idb@npm:7.1.1"
+  checksum: 1973c28d53c784b177bdef9f527ec89ec239ec7cf5fcbd987dae75a16c03f5b7dfcc8c6d3285716fd0309dd57739805390bd9f98ce23b1b7d8849a3b52de8d56
+  languageName: node
+  linkType: hard
+
+"idchimp-front-end@workspace:.":
   version: 0.0.0-use.local
-  resolution: "id-chimp-front-end@workspace:."
+  resolution: "idchimp-front-end@workspace:."
   dependencies:
     "@polkadot/api": ^10.6.1
     "@polkadot/extension-dapp": ^0.46.2
@@ -8366,13 +8373,6 @@ __metadata:
     stream-browserify: ^3.0.0
   languageName: unknown
   linkType: soft
-
-"idb@npm:^7.0.1":
-  version: 7.1.1
-  resolution: "idb@npm:7.1.1"
-  checksum: 1973c28d53c784b177bdef9f527ec89ec239ec7cf5fcbd987dae75a16c03f5b7dfcc8c6d3285716fd0309dd57739805390bd9f98ce23b1b7d8849a3b52de8d56
-  languageName: node
-  linkType: hard
 
 "identity-obj-proxy@npm:^3.0.0":
   version: 3.0.0

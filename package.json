@@ -1,10 +1,10 @@
 {
-  "name": "id-chimp-front-end",
+  "name": "idchimp-front-end",
   "version": "monthly-2022-01",
   "private": true,
   "author": "Felidae-Team",
   "license": "Unlicense",
-  "homepage": "https://substrate-developer-hub.github.io/did-chimp-felidae-network",
+  "homepage": ".",
   "bugs": {
     "url": "https://github.com/substrate-developer-hub/did-chimp-felidae-network/issues"
   },
