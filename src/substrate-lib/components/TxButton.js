@@ -93,7 +93,7 @@ function TxButton({
             // Other, CannotLookup, BadOrigin, no extra info
             errorInfo = dispatchError.toString();
           }
-          setStatus(`😞 Transaction Failed! ${section}.${method}::${errorInfo}`)
+          setStatus(`😞 Transaction Failed! Error:  ${errorInfo}`)
         } else if (section + ":" + method === 'system:ExtrinsicSuccess' ) {
           setStatus(`❤️️ Transaction successful! tx hash: ${txHash}`)
         }

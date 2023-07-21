@@ -14,27 +14,15 @@ import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
 import AccountSelector from './AccountSelector'
-import Balances from './Balances'
-import BlockNumber from './BlockNumber'
-import Events from './Events'
-import Interactor from './Interactor'
-import Metadata from './Metadata'
-import NodeInfo from './NodeInfo'
-import TemplateModule from './TemplateModule'
-import Transfer from './Transfer'
-import Upgrade from './Upgrade'
-
-import IdChimpUserModule from './IDChimpUser'
-import IdChimpVerifierModule from './IDChimpVerifier'
-import VerificationProtocol from './IDChimpVerificationProtcol'
-import EventsOfAccount from './EventsOfUser'
+import IdChimpUserModule from './IDChimpUserCenter'
+import IdChimpVerifierModule from './IDChimpVerifierCenter'
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
 
-  const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const toggleShowAdvanced = () => setShowAdvanced(!showAdvanced)
+  const [role, setRole] = useState('Consumer')
+  const toggleRole = () =>
+    setRole(current => (current === 'Consumer' ? 'Verifier' : 'Consumer'))
 
   const loader = text => (
     <Dimmer active>
@@ -74,53 +62,51 @@ function Main() {
       </Sticky>
       <Container>
         <Grid stackable columns="equal">
-          <h1>ID-Chimp Module :: Felidae Network </h1>
+          <h1>Welcome to Felidae Network</h1>
           <Grid.Row>
-            <Grid.Column>
-            <VerificationProtocol />
-            </Grid.Column>
-            <Grid.Column>
-              <Grid.Row>
-                <EventsOfAccount />
-              </Grid.Row>
-              <br />
-              <Grid.Row>
-                <IdChimpUserModule />
-              </Grid.Row>
-            </Grid.Column>
+            <div
+              style={{
+                display: 'inline-block',
+                marginBottom: '5px',
+              }}
+            >
+              <Button
+                disabled={role === 'Consumer'}
+                onClick={toggleRole}
+                style={{
+                  border: '1px solid gray',
+                  transform: role === 'Consumer' ? 'scale(1.2)' : 'none',
+                  marginRight: role === 'Consumer' ? '22px' : '10px',
+                  transformOrigin: 'left',
+                }}
+              >
+                Consumer
+              </Button>
+              {/* </div> */}
+              <Button
+                disabled={role === 'Verifier'}
+                onClick={toggleRole}
+                style={{
+                  border: '1px solid gray',
+                  transform: role === 'Verifier' ? 'scale(1.2)' : 'none',
+                }}
+              >
+                Verifier
+              </Button>
+            </div>
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column>
-             <IdChimpVerifierModule />
-            </Grid.Column>
-            <Grid.Column>
-              <Events />
-            </Grid.Column>
+            <div
+              style={{
+                minHeight: '75vh',
+                width: '100%',
+                border: '1px solid gray',
+              }}
+            >
+              {role === 'Consumer' && <IdChimpUserModule />}
+              {role === 'Verifier' && <IdChimpVerifierModule />}
+            </div>
           </Grid.Row>
-          <Grid.Row stretched>
-            <NodeInfo />
-            <Metadata />
-            <BlockNumber />
-            <BlockNumber finalized />
-          </Grid.Row>
-          <Grid.Row stretched>
-            <Balances />
-          </Grid.Row>
-          <Button onClick={toggleShowAdvanced}>
-            {showAdvanced? 'Hide Advanced Options': 'Show Advanced Options'}
-            </Button>
-          { showAdvanced && (
-          <Grid> 
-            <Grid.Row>
-              <Transfer />
-              <Upgrade />
-            </Grid.Row>
-            <Grid.Row>
-              <Interactor />
-              <TemplateModule />
-            </Grid.Row>
-          </Grid>
-          )}
         </Grid>
       </Container>
       <DeveloperConsole />
