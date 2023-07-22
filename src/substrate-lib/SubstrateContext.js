@@ -111,11 +111,13 @@ const loadAccounts = (state, dispatch) => {
       // Logics to check if the connecting chain is a dev chain, coming from polkadot-js Apps
       // ref: https://github.com/polkadot-js/apps/blob/15b8004b2791eced0dde425d5dc7231a5f86c682/packages/react-api/src/Api.tsx?_pjax=div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20%3E%20main#L101-L110
       const { systemChain, systemChainType } = await retrieveChainInfo(api)
-      const isDevelopment =
-        systemChainType.isDevelopment ||
-        systemChainType.isLocal ||
-        isTestChain(systemChain)
+      let isDevelopment =
+        config.load_dev_accounts &&
+        (systemChainType.isDevelopment ||
+          systemChainType.isLocal ||
+          isTestChain(systemChain))
 
+      console.log('isDevelopment', isDevelopment)
       Keyring.loadAll({ isDevelopment }, allAccounts)
 
       dispatch({ type: 'SET_KEYRING', payload: Keyring })

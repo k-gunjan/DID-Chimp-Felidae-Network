@@ -1,12 +1,13 @@
 {
   "APP_NAME": "id-chimp-front-end",
   "CUSTOM_RPC_METHODS": {},
-  "chainOptions" : [
+  "chainOptions": [
     { "label": "Felidae Test Network", "value": "wss://panther-testnet.live" },
     { "label": "Local Node", "value": "ws://127.0.0.1:9944" }
   ],
-  "roleOptions" : [
-    {"label": "Consumer", "value": "Consumer1"},
-    {"label": "Verifier", "value": "Verifier1"}
-  ]
+  "roleOptions": [
+    { "label": "Consumer", "value": "Consumer1" },
+    { "label": "Verifier", "value": "Verifier1" }
+  ],
+  "load_dev_accounts": true
 }
