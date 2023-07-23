@@ -124,6 +124,7 @@ function TaskCard({ entry }) {
                     label="Submit Verification Data"
                     type="SIGNED-TX"
                     setStatus={setTxState}
+                    disabled={!verificationData.isInputComplete}
                     attrs={{
                       palletRpc: 'verificationProtocol',
                       callable: 'submitVerificationData',
@@ -138,6 +139,7 @@ function TaskCard({ entry }) {
                     label="Reval Data"
                     type="SIGNED-TX"
                     setStatus={setTxState}
+                    disabled={!verificationData.isInputComplete}
                     attrs={{
                       palletRpc: 'verificationProtocol',
                       callable: 'revealData',

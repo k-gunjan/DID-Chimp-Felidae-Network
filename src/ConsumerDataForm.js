@@ -25,10 +25,52 @@ const ConsumerDataForm = ({ setVerificationData }) => {
   // submit REJECT or Approve with user details
   const [approve, setApprove] = useState(true)
 
+  const [mandatoryFieldsFilled, setMandatoryFieldsFilled] = useState(false)
+
   const toggleApprove = e => {
     e.preventDefault()
     setApprove(!approve)
   }
+
+  const clearFormData = e => {
+    e.preventDefault()
+    setName('')
+    setFatherName('')
+    setMotherName('')
+    setGuardianName('')
+    setDOB('')
+    setIDIssuer('')
+    setIDType('')
+    setCountry('')
+    setRandomNumber('')
+  }
+
+  useEffect(() => {
+    const isMandatoryFieldsFilled =
+      (fatherName.trim() !== '' ||
+        motherName.trim() !== '' ||
+        guardianName.trim() !== '') &&
+      name.trim() !== '' &&
+      dob.trim() !== '' &&
+      idIssuer.trim() !== '' &&
+      idType.trim() !== '' &&
+      country.trim() !== '' &&
+      randomNumber.trim() !== ''
+
+    setMandatoryFieldsFilled(isMandatoryFieldsFilled)
+  }, [
+    name,
+    fatherName,
+    motherName,
+    guardianName,
+    dob,
+    idType,
+    idIssuer,
+    country,
+    randomNumber,
+    approve,
+    setVerificationData,
+  ])
 
   useEffect(() => {
     let encoder = new TextEncoder()
@@ -42,6 +84,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
       idIssuer,
       country,
       randomNumber,
+      mandatoryFieldsFilled,
 
       dnf: function () {
         let rdata = ''
@@ -106,9 +149,11 @@ const ConsumerDataForm = ({ setVerificationData }) => {
           consumerData: toHexString(combinedBytes),
           hashedConsumerData: hashed,
           secret: this.randomNumber,
+          isInputComplete: mandatoryFieldsFilled,
         }
       },
     }
+
     setVerificationData({ ...data.submissionData() })
     // console.log(`keccak as hex: ${keccakAsHex(name)}`)
   }, [
@@ -123,6 +168,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
     randomNumber,
     approve,
     setVerificationData,
+    mandatoryFieldsFilled,
   ])
 
   return (
@@ -143,16 +189,32 @@ const ConsumerDataForm = ({ setVerificationData }) => {
           <br />
           Fill up the consumer details based on the uploaded document
           <br />
+          {!mandatoryFieldsFilled && (
+            <span style={{ color: 'red' }}>
+              * Required fields, &nbsp;# Atleast one required
+            </span>
+          )}
           <Form.Group widths="equal">
-            <Form.Field>
+            <Form.Field required error={name.trim() === ''}>
               <label>Name</label>
               <Input
                 value={name}
                 onChange={e => setName(e.target.value.trim().toUpperCase())}
               />
             </Form.Field>
-            <Form.Field>
-              <label>Father's Name</label>
+            <Form.Field
+              required
+              error={
+                !(
+                  fatherName.trim() !== '' ||
+                  motherName.trim() !== '' ||
+                  guardianName.trim() !== ''
+                )
+              }
+            >
+              <label>
+                Father's Name <span style={{ color: 'red' }}>#</span>
+              </label>
               <Input
                 value={fatherName}
                 onChange={e =>
@@ -162,8 +224,19 @@ const ConsumerDataForm = ({ setVerificationData }) => {
             </Form.Field>
           </Form.Group>
           <Form.Group widths="equal">
-            <Form.Field>
-              <label>Mother's Name</label>
+            <Form.Field
+              required
+              error={
+                !(
+                  fatherName.trim() !== '' ||
+                  motherName.trim() !== '' ||
+                  guardianName.trim() !== ''
+                )
+              }
+            >
+              <label>
+                Mother's Name <span style={{ color: 'red' }}>#</span>
+              </label>
               <Input
                 value={motherName}
                 onChange={e =>
@@ -171,8 +244,19 @@ const ConsumerDataForm = ({ setVerificationData }) => {
                 }
               />
             </Form.Field>
-            <Form.Field>
-              <label>Guardian's Name</label>
+            <Form.Field
+              required
+              error={
+                !(
+                  fatherName.trim() !== '' ||
+                  motherName.trim() !== '' ||
+                  guardianName.trim() !== ''
+                )
+              }
+            >
+              <label>
+                Guardian's Name <span style={{ color: 'red' }}>#</span>
+              </label>
               <Input
                 value={guardianName}
                 onChange={e =>
@@ -182,7 +266,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
             </Form.Field>
           </Form.Group>
           <Form.Group widths="equal">
-            <Form.Field>
+            <Form.Field required error={dob.trim() === ''}>
               <label>Date of Birth</label>
               <Input
                 type="date"
@@ -190,7 +274,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
                 onChange={e => setDOB(e.target.value)}
               />
             </Form.Field>
-            <Form.Field>
+            <Form.Field required error={idType.trim() === ''}>
               <label>Type of ID</label>
               <Input
                 value={idType}
@@ -199,14 +283,14 @@ const ConsumerDataForm = ({ setVerificationData }) => {
             </Form.Field>
           </Form.Group>
           <Form.Group widths="equal">
-            <Form.Field>
+            <Form.Field required error={idIssuer.trim() === ''}>
               <label>Issuer of ID</label>
               <Input
                 value={idIssuer}
                 onChange={e => setIDIssuer(e.target.value.trim().toUpperCase())}
               />
             </Form.Field>
-            <Form.Field>
+            <Form.Field required error={country.trim() === ''}>
               <label>Country</label>
               <Input
                 value={country}
@@ -217,13 +301,22 @@ const ConsumerDataForm = ({ setVerificationData }) => {
         </div>
       )}
       <Form.Group widths="equal">
-        <Form.Field>
+        <Form.Field required error={randomNumber.trim() === ''}>
           <label>Random Secret</label>
           <Input
             type="password"
             value={randomNumber}
             onChange={e => setRandomNumber(e.target.value)}
             style={{ maxWidth: '200px' }}
+          />
+        </Form.Field>
+        <Form.Field>
+          <label>&nbsp; &nbsp;</label>
+          <Button
+            label="Clear Data"
+            icon="close"
+            onClick={e => clearFormData(e)}
+            // style={{ maxWidth: '200px' }}
           />
         </Form.Field>
       </Form.Group>
