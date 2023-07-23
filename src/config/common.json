@@ -9,5 +9,5 @@
     { "label": "Consumer", "value": "Consumer1" },
     { "label": "Verifier", "value": "Verifier1" }
   ],
-  "load_dev_accounts": true
+  "load_dev_accounts": false
 }
