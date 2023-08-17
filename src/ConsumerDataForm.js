@@ -119,7 +119,7 @@ const ConsumerDataForm = ({ setVerificationData }) => {
         let combinedBytes
         if (approve) {
           const part1 = encoder.encode(
-            [this.idIssuer, this.idType, this.country].join(delimiterString)
+            [this.country, this.idIssuer, this.idType].join(delimiterString)
           )
           // console.log([this.idIssuer, this.idType, this.country, ].join(delimiterString) )
           // console.log(part1.length)
