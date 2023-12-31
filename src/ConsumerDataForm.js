@@ -47,15 +47,22 @@ const ConsumerDataForm = ({ setVerificationData }) => {
 
   useEffect(() => {
     const isMandatoryFieldsFilled =
-      (fatherName.trim() !== '' ||
+      (
+        (fatherName.trim() !== '' ||
         motherName.trim() !== '' ||
         guardianName.trim() !== '') &&
-      name.trim() !== '' &&
-      dob.trim() !== '' &&
-      idIssuer.trim() !== '' &&
-      idType.trim() !== '' &&
-      country.trim() !== '' &&
-      randomNumber.trim() !== ''
+        name.trim() !== '' &&
+        dob.trim() !== '' &&
+        idIssuer.trim() !== '' &&
+        idType.trim() !== '' &&
+        country.trim() !== '' &&
+        randomNumber.trim() !== '' &&
+        approve
+        ) ||
+        (
+          randomNumber.trim() !== '' &&
+          !approve
+        )
 
     setMandatoryFieldsFilled(isMandatoryFieldsFilled)
   }, [
